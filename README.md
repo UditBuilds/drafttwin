@@ -44,12 +44,16 @@ Open http://localhost:5000.
 
 Stored as a plain `major.minor` string in `brands.version`. The editor always bumps the minor on save. The parser in `brain_editor.py` splits the brain into 5 fixed sections + internal notes; the assembler regenerates the header/footer with the new version, so the on-disk file stays well-formed regardless of what the founder edits.
 
-## Deploy to Render
+## Deploy to Railway
 
-Commit this directory to a git repo and push. In Render, "New +" → "Blueprint" → point at the repo. `render.yaml` defines:
-- one web service running `gunicorn app:app`
-- a 1GB persistent disk mounted at `/var/data` so SQLite survives restarts
-- `ANTHROPIC_API_KEY` (set manually), `FLASK_SECRET_KEY` (auto-generated)
+Push this directory to a GitHub repo. In Railway, "New Project" → "Deploy from GitHub repo" → pick the repo. `railway.toml` + `Procfile` tell Railway to run `gunicorn app:app --bind 0.0.0.0:$PORT`.
+
+Required env vars (set in Railway → Variables):
+- `ANTHROPIC_API_KEY` — from https://console.anthropic.com
+- `FLASK_SECRET_KEY` — any long random string
+- `DRAFTTWIN_DB` — optional. Defaults to `drafttwin.db` in the working directory. For persistence across redeploys, attach a Railway Volume at `/data` and set `DRAFTTWIN_DB=/data/drafttwin.db`.
+
+Without a volume, the SQLite file is wiped on every redeploy — fine for testing, not for production users.
 
 ## Files
 
@@ -64,7 +68,7 @@ Commit this directory to a git repo and push. In Render, "New +" → "Blueprint"
 | `templates/` | Base, login, signup, onboarding, dashboard, brain, flagged |
 | `static/style.css` | Styling |
 | `brains/` | Generated brain.md files per brand |
-| `render.yaml`, `Procfile` | Render deploy |
+| `railway.toml`, `Procfile` | Railway deploy |
 
 ## Next phases
 
