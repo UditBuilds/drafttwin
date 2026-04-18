@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: drafttwin
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: DRAFTTWIN_DB
+        value: /var/data/drafttwin.db
+    disk:
+      name: drafttwin-data
+      mountPath: /var/data
+      sizeGB: 1

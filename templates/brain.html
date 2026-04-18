@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Brain editor — {{ brand.name }}{% endblock %}
+{% block content %}
+<h1>Brain editor</h1>
+<p class="lede">
+  Version <strong>v{{ brand.version }}</strong> · last updated {{ brand.updated_at }}.
+  Saving any change bumps the version (e.g. v{{ brand.version }} → v{{ brand.version.split('.')[0] }}.{{ brand.version.split('.')[1]|int + 1 }}).
+</p>
+
+<form method="post" action="{{ url_for('brain_save') }}" class="form">
+  {% for num, title in section_meta %}
+    <section>
+      <h2>Section {{ num }} — {{ title }}</h2>
+      <textarea name="section_{{ num }}" rows="14">{{ sections['section_' ~ num] }}</textarea>
+    </section>
+  {% endfor %}
+
+  <section>
+    <h2>Internal Notes</h2>
+    <p class="hint">Not customer-facing — logic guidance for the twin.</p>
+    <textarea name="internal" rows="10">{{ sections['internal'] }}</textarea>
+  </section>
+
+  <div class="actions">
+    <button type="submit" class="primary">Save &amp; bump version</button>
+    <a href="{{ url_for('dashboard') }}" class="linklike">Cancel</a>
+  </div>
+</form>
+{% endblock %}

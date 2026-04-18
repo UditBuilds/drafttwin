@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Onboarding — DraftTwin{% endblock %}
+{% block content %}
+<h1>Brand onboarding</h1>
+<p class="lede">Tell us how your brand thinks, speaks, and operates. We'll turn it into a brain file your support twin loads on every customer reply.</p>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form method="post" action="{{ url_for('onboarding_submit') }}" class="form">
+  <section>
+    <h2>Brand</h2>
+    <label>Brand name
+      <input type="text" name="brand_name" required placeholder="The Glam Shelf" />
+    </label>
+    <label>What you make / sell
+      <textarea name="brand_description" rows="3" required placeholder="One paragraph — what the brand is, what makes it different, what you stand for."></textarea>
+    </label>
+    <label>Target customer
+      <textarea name="target_customer" rows="3" required placeholder="Age, location, personality, shopping behavior, what they care about."></textarea>
+    </label>
+    <label>Tone preference
+      <textarea name="tone_preference" rows="4" required placeholder="Vibe (warm / corporate / casual), emoji policy, reply length, language mirroring, phrases you never use."></textarea>
+    </label>
+  </section>
+
+  <section>
+    <h2>Product catalog</h2>
+    <p class="hint">Add every SKU customers ask about. Be specific with price.</p>
+    <div id="products">
+      <div class="product-row">
+        <input type="text" name="product_name[]" placeholder="Product name" />
+        <input type="text" name="product_price[]" placeholder="Price (e.g. ₹699)" />
+        <input type="text" name="product_description[]" placeholder="One-line description" />
+      </div>
+    </div>
+    <button type="button" class="add-row" onclick="addProduct()">+ Add product</button>
+  </section>
+
+  <section>
+    <h2>Shipping policy</h2>
+    <textarea name="shipping_policy" rows="5" required placeholder="Delivery timelines, dispatch SLA, courier partners, what to do for stuck/delivered-not-received situations."></textarea>
+  </section>
+
+  <section>
+    <h2>Return policy</h2>
+    <textarea name="return_policy" rows="5" required placeholder="What you accept, what you don't, proof required, resolution options, timelines."></textarea>
+  </section>
+
+  <section>
+    <h2>Payment methods</h2>
+    <textarea name="payment_methods" rows="4" required placeholder="Which methods are supported (UPI, cards, wallets, COD yes/no), how to handle failed payments / deductions without order, refund timelines."></textarea>
+  </section>
+
+  <section>
+    <h2>The Never List <span class="hint">(5 hard rules your twin must never break)</span></h2>
+    {% for i in range(1,6) %}
+      <label>Never #{{ i }}
+        <input type="text" name="never_{{ i }}" placeholder="e.g. quote a price lower than ₹649/tray — escalate instead" />
+      </label>
+    {% endfor %}
+  </section>
+
+  <button type="submit" class="primary">Generate brain file</button>
+</form>
+
+<script>
+function addProduct() {
+  const row = document.createElement('div');
+  row.className = 'product-row';
+  row.innerHTML = `
+    <input type="text" name="product_name[]" placeholder="Product name" />
+    <input type="text" name="product_price[]" placeholder="Price" />
+    <input type="text" name="product_description[]" placeholder="One-line description" />
+  `;
+  document.getElementById('products').appendChild(row);
+}
+</script>
+{% endblock %}

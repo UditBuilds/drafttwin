@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+drafttwin.db
+brains/*.md
+!brains/.gitkeep
+.venv/
+venv/

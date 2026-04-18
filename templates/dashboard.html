@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ brand.name }}{% endblock %}
+{% block content %}
+<h1>{{ brand.name }}</h1>
+<p class="lede">
+  Brain file: <strong>v{{ brand.version }}</strong> · last updated {{ brand.updated_at }} ·
+  <a href="{{ url_for('brain_editor') }}">edit brain</a> ·
+  <a href="{{ url_for('flagged_page') }}">flagged replies</a>
+</p>
+
+<div class="grid">
+  <section class="panel">
+    <h2>Customer message</h2>
+    <textarea id="msg" rows="8" placeholder="Paste the customer's WhatsApp DM here..."></textarea>
+    <button id="draft-btn" class="primary">Draft reply</button>
+    <div id="status" class="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Response</h2>
+    <div id="result" class="result empty">No draft yet.</div>
+  </section>
+</div>
+
+<section>
+  <h2>Recent drafts</h2>
+  {% if not drafts %}
+    <div class="panel empty-state"><p>No drafts yet. Paste a customer message above to try it.</p></div>
+  {% else %}
+    <div class="draft-list">
+      {% for d in drafts %}
+        <article class="draft-card" data-draft-id="{{ d.id }}">
+          <header>
+            <span class="badge {% if d.classification == 'AUTO' %}auto{% elif d.classification == 'ESCALATE' %}escalate{% else %}draft{% endif %}">{{ d.classification }}</span>
+            <span class="meta">{{ d.created_at }}</span>
+            {% if d.flag_id %}
+              <span class="badge flagged-badge">FLAGGED</span>
+            {% endif %}
+          </header>
+
+          <h4>Customer</h4>
+          <p class="msg-snippet">{{ d.customer_msg[:240] }}{% if d.customer_msg|length > 240 %}…{% endif %}</p>
+
+          <h4>Reply</h4>
+          <p class="reply-snippet">{{ d.reply[:300] }}{% if d.reply|length > 300 %}…{% endif %}</p>
+
+          {% if d.flag_id %}
+            <h4>Your correction</h4>
+            <p class="reply-snippet good">{{ d.suggested_reply[:300] }}{% if d.suggested_reply|length > 300 %}…{% endif %}</p>
+            <div class="actions">
+              <button type="button" class="flag-toggle" data-draft-id="{{ d.id }}">Edit correction</button>
+            </div>
+          {% else %}
+            <div class="actions">
+              <button type="button" class="flag-toggle" data-draft-id="{{ d.id }}">Flag this reply</button>
+            </div>
+          {% endif %}
+
+          <div class="flag-form" id="flag-form-{{ d.id }}" hidden>
+            <label>What should the reply have been?
+              <textarea rows="4" placeholder="Write the correct reply in your brand voice...">{{ d.suggested_reply or '' }}</textarea>
+            </label>
+            <div class="actions">
+              <button type="button" class="primary flag-save" data-draft-id="{{ d.id }}">Save correction</button>
+              <button type="button" class="flag-cancel" data-draft-id="{{ d.id }}">Cancel</button>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<script>
+const btn = document.getElementById('draft-btn');
+const msgEl = document.getElementById('msg');
+const resultEl = document.getElementById('result');
+const statusEl = document.getElementById('status');
+
+btn.addEventListener('click', async () => {
+  const message = msgEl.value.trim();
+  if (!message) { statusEl.textContent = 'Paste a message first.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = 'Drafting…';
+  resultEl.className = 'result empty';
+  resultEl.textContent = '';
+
+  try {
+    const r = await fetch('/api/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Request failed');
+
+    const cls = data.classification;
+    const badgeClass = cls === 'AUTO' ? 'auto' : cls === 'ESCALATE' ? 'escalate' : 'draft';
+
+    resultEl.className = 'result';
+    resultEl.innerHTML = `
+      <div class="badge ${badgeClass}">${cls}</div>
+      <h3>Reply</h3>
+      <pre class="reply">${escapeHtml(data.reply)}</pre>
+      <h3>Reasoning</h3>
+      <p class="reasoning">${escapeHtml(data.reasoning || '')}</p>
+      <p class="hint">Draft saved — reload the page to see it in recent drafts.</p>
+    `;
+    statusEl.textContent = '';
+  } catch (err) {
+    statusEl.textContent = 'Error: ' + err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// Flag UI
+document.querySelectorAll('.flag-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.draftId;
+    document.getElementById('flag-form-' + id).hidden = false;
+    btn.hidden = true;
+  });
+});
+
+document.querySelectorAll('.flag-cancel').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.draftId;
+    const form = document.getElementById('flag-form-' + id);
+    form.hidden = true;
+    const toggle = document.querySelector('.flag-toggle[data-draft-id="' + id + '"]');
+    if (toggle) toggle.hidden = false;
+  });
+});
+
+document.querySelectorAll('.flag-save').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = parseInt(btn.dataset.draftId, 10);
+    const form = document.getElementById('flag-form-' + id);
+    const suggested = form.querySelector('textarea').value.trim();
+    if (!suggested) { alert('Write the correct reply before saving.'); return; }
+
+    btn.disabled = true;
+    try {
+      const r = await fetch('/api/flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ draft_id: id, suggested_reply: suggested })
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Flag failed');
+      location.reload();
+    } catch (err) {
+      alert('Error: ' + err.message);
+      btn.disabled = false;
+    }
+  });
+});
+</script>
+{% endblock %}

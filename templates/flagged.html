@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Flagged replies — {{ brand.name }}{% endblock %}
+{% block content %}
+<h1>Flagged replies</h1>
+<p class="lede">Drafts where the twin got it wrong — and what the right reply should have been. Use this list to find gaps in your <a href="{{ url_for('brain_editor') }}">brain file</a>.</p>
+
+{% if not flags %}
+  <div class="panel empty-state">
+    <p>No flagged replies yet. When you flag a draft from the dashboard, it'll show up here.</p>
+  </div>
+{% else %}
+  <div class="flag-list">
+    {% for f in flags %}
+      <article class="flag-card {% if f.resolved %}resolved{% endif %}" data-flag-id="{{ f.id }}">
+        <header>
+          <span class="badge {% if f.classification == 'AUTO' %}auto{% elif f.classification == 'ESCALATE' %}escalate{% else %}draft{% endif %}">{{ f.classification }}</span>
+          <span class="meta">flagged {{ f.created_at }}</span>
+          {% if f.resolved %}<span class="badge resolved-badge">RESOLVED</span>{% endif %}
+        </header>
+
+        <h3>Customer message</h3>
+        <pre class="msg">{{ f.customer_msg }}</pre>
+
+        <h3>Twin's original reply</h3>
+        <pre class="reply bad">{{ f.original_reply }}</pre>
+
+        <h3>Founder's correct reply</h3>
+        <pre class="reply good">{{ f.suggested_reply }}</pre>
+
+        <div class="actions">
+          {% if not f.resolved %}
+            <button type="button" class="resolve-btn" data-flag-id="{{ f.id }}">Mark resolved</button>
+          {% endif %}
+          <button type="button" class="delete-btn" data-flag-id="{{ f.id }}">Delete</button>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+async function post(url, body) {
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return r.ok;
+}
+
+document.querySelectorAll('.resolve-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = parseInt(btn.dataset.flagId, 10);
+    if (await post('/api/flag/resolve', { flag_id: id })) location.reload();
+  });
+});
+
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this flag?')) return;
+    const id = parseInt(btn.dataset.flagId, 10);
+    if (await post('/api/flag/delete', { flag_id: id })) location.reload();
+  });
+});
+</script>
+{% endblock %}
