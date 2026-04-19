@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">DraftTwin</a>
+    <a class="brand" href="/">Draft<span class="brand-accent">Twin</span></a>
     <nav>
       {% if current_user.is_authenticated %}
         {% if current_user.has_brain %}
@@ -24,7 +24,7 @@
         </form>
       {% else %}
         <a href="{{ url_for('auth.login') }}">Login</a>
-        <a href="{{ url_for('auth.signup') }}">Sign up</a>
+        <a class="nav-cta" href="{{ url_for('auth.signup') }}">Sign up</a>
       {% endif %}
     </nav>
   </header>
