@@ -3,7 +3,7 @@
 Multi-brand AI customer support drafting tool for D2C brands. Each brand signs up, onboards a brain file, and gets a private dashboard for drafting + reviewing replies.
 
 ## Stack
-Python + Flask, Flask-Login, SQLite, vanilla HTML/JS, Anthropic SDK (Claude `claude-sonnet-4-6`). Deployable on Render.
+Python + Flask, Flask-Login, SQLite, vanilla HTML/JS, Groq SDK (`llama-3.3-70b-versatile`). Deployable on Railway.
 
 ## Local setup
 
@@ -13,7 +13,7 @@ python -m venv .venv
 .venv\Scripts\activate   # Windows
 # source .venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
-cp .env.example .env     # then edit .env and paste ANTHROPIC_API_KEY
+cp .env.example .env     # then edit .env and paste GROQ_API_KEY
 python app.py
 ```
 
@@ -37,7 +37,7 @@ Open http://localhost:5000.
 ## How the LLM call works
 
 - System prompt = full brand `brain.md` + strict operating rules.
-- The brain.md block uses `cache_control: ephemeral` — Anthropic prompt caching means the long brand context is billed/read once per ~5-min window across many DMs.
+- Model: `llama-3.3-70b-versatile` on Groq (fast inference, OpenAI-compatible function calling).
 - Structured output is enforced by a forced `draft_reply` tool call. Classification is constrained to `AUTO | DRAFT+APPROVE | ESCALATE`.
 
 ## Brain versioning
@@ -49,7 +49,7 @@ Stored as a plain `major.minor` string in `brands.version`. The editor always bu
 Push this directory to a GitHub repo. In Railway, "New Project" → "Deploy from GitHub repo" → pick the repo. `railway.toml` + `Procfile` tell Railway to run `gunicorn app:app --bind 0.0.0.0:$PORT`.
 
 Required env vars (set in Railway → Variables):
-- `ANTHROPIC_API_KEY` — from https://console.anthropic.com
+- `GROQ_API_KEY` — from https://console.groq.com/keys
 - `FLASK_SECRET_KEY` — any long random string
 - `DRAFTTWIN_DB` — optional. Defaults to `drafttwin.db` in the working directory. For persistence across redeploys, attach a Railway Volume at `/data` and set `DRAFTTWIN_DB=/data/drafttwin.db`.
 
@@ -63,7 +63,7 @@ Without a volume, the SQLite file is wiped on every redeploy — fine for testin
 | `auth.py` | Flask-Login wiring, User model, login/signup/logout blueprint |
 | `brain_generator.py` | Onboarding form → initial brain.md |
 | `brain_editor.py` | Parse/assemble brain.md sections; version bump |
-| `llm.py` | Anthropic SDK call, tool use, prompt caching |
+| `llm.py` | Groq SDK call, forced tool use |
 | `db.py` | SQLite schema, migrations, query helpers |
 | `templates/` | Base, login, signup, onboarding, dashboard, brain, flagged |
 | `static/style.css` | Styling |
