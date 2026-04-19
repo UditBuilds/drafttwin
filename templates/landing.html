@@ -1,89 +1,635 @@
-{% extends "base.html" %}
-{% block title %}DraftTwin — your brand's voice, on every customer DM{% endblock %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DraftTwin — AI Customer Support for Indian D2C Brands</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-soft: #111113;
+      --bg-card: #141418;
+      --border: #1f1f24;
+      --border-strong: #2a2a31;
+      --text: #f5f5f7;
+      --muted: #8b8b94;
+      --accent: #4F46E5;
+      --accent-hover: #6366f1;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
 
-{% block content %}
-<section class="hero">
-  <h1 class="hero-title">Your WhatsApp inbox is drowning. Your customers aren't waiting.</h1>
-  <p class="hero-sub">
-    DraftTwin is a customer support co-pilot built for Indian D2C founders. It learns your brand's
-    voice, policies, and the things you'd never say — and drafts every reply in seconds, so you
-    stop copy-pasting templates at 1am.
-  </p>
-  <div class="hero-ctas">
-    <a class="btn-primary" href="{{ url_for('auth.signup') }}">Get started — it's free</a>
-    <a class="btn-ghost" href="{{ url_for('auth.login') }}">Log in</a>
-  </div>
-  <p class="hero-note">Built for brands doing 50–500 DMs/day across WhatsApp, Instagram, and email.</p>
-</section>
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; }
+    .nav-links a { color: var(--muted); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: var(--accent-hover); }
 
-<section class="pains">
-  <h2 class="section-title">If any of this sounds familiar, keep reading.</h2>
-  <div class="pain-grid">
-    <div class="pain-card">
-      <div class="pain-emoji">📥</div>
-      <h3>200 DMs a day, 1 of you</h3>
-      <p>Your inbox is the bottleneck. You're the founder, the CX lead, and the midnight firefighter. Replies go out late or not at all.</p>
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 15px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .btn-ghost:hover { border-color: var(--text); }
+    .btn-lg { padding: 16px 28px; font-size: 16px; }
+
+    /* Sections */
+    section { padding: 96px 32px; max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 40px;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      margin: 0 0 16px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .section-head { text-align: center; margin-bottom: 56px; }
+
+    /* Hero */
+    .hero {
+      padding: 120px 32px 80px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(79, 70, 229, 0.18), transparent 70%),
+        var(--bg);
+      max-width: none;
+    }
+    .hero-inner { max-width: 880px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(79, 70, 229, 0.12);
+      border: 1px solid rgba(79, 70, 229, 0.3);
+      font-size: 13px;
+      color: #c7c4ff;
+      margin-bottom: 24px;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .hero h1 {
+      font-size: 64px;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+      margin: 0 0 24px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-sub {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 40px;
+      line-height: 1.55;
+    }
+    .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .hero-note {
+      margin-top: 28px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Pain */
+    .pain { padding-top: 64px; }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+    .stat-number {
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .stat-number .unit {
+      font-size: 24px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .stat-label {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* How it works */
+    .steps { display: grid; gap: 16px; }
+    .step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      align-items: start;
+      transition: border-color 0.15s;
+    }
+    .step:hover { border-color: var(--border-strong); }
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .step h3 {
+      margin: 4px 0 8px;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      font-weight: 600;
+    }
+    .step p { color: var(--muted); margin: 0; font-size: 15px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #fff;
+      margin: 0 2px;
+    }
+    .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+    .pill.green { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.35); }
+    .pill.green .dot { background: var(--green); }
+    .pill.amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.35); }
+    .pill.amber .dot { background: var(--amber); }
+    .pill.red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.35); }
+    .pill.red .dot { background: var(--red); }
+
+    /* Comparison */
+    .compare-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    table.compare th, table.compare td {
+      padding: 18px 24px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    table.compare thead th {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      background: var(--bg-soft);
+    }
+    table.compare thead th.highlight { color: var(--accent); }
+    table.compare td:first-child { color: var(--muted); font-weight: 500; }
+    table.compare td.human { color: #d4d4d8; }
+    table.compare td.us { color: var(--text); font-weight: 600; }
+    table.compare tbody tr:last-child td { border-bottom: none; }
+    table.compare tbody tr:hover { background: rgba(79, 70, 229, 0.03); }
+
+    /* Who it's for */
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .who-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .who-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .who-emoji { font-size: 36px; margin-bottom: 12px; }
+    .who-card h4 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Pricing */
+    .price-wrap { display: flex; justify-content: center; }
+    .price-card {
+      max-width: 440px;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(79, 70, 229, 0.15);
+    }
+    .price-tag {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .price-name { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 12px; }
+    .price-amount { font-size: 56px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .price-amount .per { font-size: 16px; color: var(--muted); font-weight: 400; }
+    .price-sub { color: var(--muted); margin-bottom: 28px; }
+    .price-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px;
+      text-align: left;
+    }
+    .price-features li {
+      padding: 10px 0;
+      color: var(--text);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .price-features li:last-child { border-bottom: none; }
+    .price-features li::before {
+      content: "✓";
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .price-card .btn { width: 100%; justify-content: center; }
+
+    /* Final CTA */
+    .final-cta {
+      text-align: center;
+      padding: 100px 32px;
+      background:
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(79, 70, 229, 0.18), transparent 70%);
+      max-width: none;
+    }
+    .final-cta h2 {
+      font-size: 44px;
+      letter-spacing: -0.025em;
+      margin: 0 0 16px;
+      font-weight: 700;
+    }
+    .final-cta p {
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 auto 32px;
+      max-width: 560px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 32px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .pain-grid { grid-template-columns: 1fr; }
+      .who-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .nav { padding: 14px 20px; }
+      .nav-links { gap: 14px; font-size: 13px; }
+      section { padding: 64px 20px; }
+      .hero { padding: 72px 20px 56px; }
+      .hero h1 { font-size: 40px; }
+      .hero-sub { font-size: 16px; }
+      .section-title { font-size: 30px; }
+      .final-cta h2 { font-size: 30px; }
+      .step { grid-template-columns: 1fr; padding: 24px; }
+      .step-num { width: 48px; height: 48px; font-size: 20px; }
+      .stat-number { font-size: 38px; }
+      table.compare th, table.compare td { padding: 14px 16px; font-size: 14px; }
+      .who-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="nav-brand" href="/">Draft<span>Twin</span></a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="{{ url_for('auth.login') }}">Log in</a>
+      <a class="nav-cta" href="{{ url_for('auth.signup') }}">Get Started</a>
     </div>
-    <div class="pain-card">
-      <div class="pain-emoji">🤖</div>
-      <h3>Chatbots sound like chatbots</h3>
-      <p>Generic bot replies feel cold. Your customers came for your brand — the warmth, the specific tone. Not "Dear valued customer."</p>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Built for Indian D2C brands
+      </div>
+      <h1>Your Brand's WhatsApp DMs Are <span class="accent">Out of Control</span></h1>
+      <p class="hero-sub">
+        DraftTwin puts an AI support assistant on your WhatsApp. It reads every customer message,
+        drafts a reply in your exact brand voice, and tells you what to send, review, or escalate — instantly.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Get Started Free →</a>
+        <a class="btn btn-ghost btn-lg" href="#how">See How It Works</a>
+      </div>
+      <p class="hero-note">No credit card required · 10-minute setup · Free forever plan</p>
     </div>
-    <div class="pain-card">
-      <div class="pain-emoji">⚠️</div>
-      <h3>One wrong reply = one Instagram story</h3>
-      <p>Refunds, shipping commitments, medical claims — get these wrong and you're doing damage control in your comments section.</p>
+  </section>
+
+  <!-- PAIN -->
+  <section class="pain">
+    <div class="section-head">
+      <span class="section-eyebrow">The Problem</span>
+      <h2 class="section-title">You're Losing Customers In Your DMs Right Now</h2>
     </div>
-  </div>
-</section>
-
-<section class="how">
-  <h2 class="section-title">How DraftTwin works</h2>
-
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <h3>Onboard your brand in 10 minutes</h3>
-      <p>Answer a short form — products, prices, policies, tone, and the 5 things you'd never say.
-      DraftTwin turns it into your brand brain: a living document your twin reads before every reply.</p>
+    <div class="pain-grid">
+      <div class="stat-card">
+        <div class="stat-number">50<span class="unit">+</span></div>
+        <div class="stat-label">WhatsApp DMs the average D2C brand receives every single day — and growing.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2–4<span class="unit"> hrs</span></div>
+        <div class="stat-label">Lost every day answering the same repetitive customer questions by hand.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1<span class="unit"> = -1</span></div>
+        <div class="stat-label">One bad DM reply means one lost customer and often one bad review on Instagram.</div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <h3>Paste a customer message → get a drafted reply</h3>
-      <p>Every draft comes classified: <span class="tag auto">AUTO</span> safe to send,
-      <span class="tag draft">DRAFT+APPROVE</span> review first (refunds, goodwill),
-      <span class="tag escalate">ESCALATE</span> you handle this one (legal, medical, PR).
-      No hallucinated prices. No invented policies.</p>
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-head">
+      <span class="section-eyebrow">How It Works</span>
+      <h2 class="section-title">From chaos to control in 3 steps</h2>
+      <p class="section-sub">No training models, no prompt engineering, no integrations. Just you, your brand, and a twin that actually gets it.</p>
     </div>
-  </div>
-
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <h3>Flag bad replies — your twin gets sharper</h3>
-      <p>When a draft misses the voice, flag it and write what you'd send instead. Use the flagged
-      list as your gap sheet, edit the brain, and next week's drafts reflect the fix.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Tell us how your brand thinks</h3>
+          <p>Fill a simple 10-minute onboarding form — products, prices, policies, tone of voice, and the things you'd never say. We turn it into your AI brain file: a living document your twin reads before every single reply.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>Paste any customer DM</h3>
+          <p>Your twin reads the message, pulls from the brain file, and drafts a reply in your brand's exact tone — down to emoji rules and sentence length. No generic "Dear valued customer" nonsense.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Send, review, or escalate</h3>
+          <p>
+            Every draft is classified:
+            <span class="pill green"><span class="dot"></span>AUTO</span> safe to send,
+            <span class="pill amber"><span class="dot"></span>REVIEW</span> check before sending (refunds, goodwill),
+            <span class="pill red"><span class="dot"></span>ESCALATE</span> you handle this personally (legal, medical, PR).
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="why">
-  <h2 class="section-title">Why founders pick DraftTwin</h2>
-  <ul class="why-list">
-    <li><strong>Your voice, not a template.</strong> The brain file captures how you actually speak — down to punctuation and emoji rules.</li>
-    <li><strong>A real Never List.</strong> Legal, medical, reseller requests, and PR traps are auto-escalated. Your twin knows when to shut up.</li>
-    <li><strong>Built for Indian D2C context.</strong> COD queries, WhatsApp-first flows, Shiprocket-style shipping timelines, GST invoices — we get it.</li>
-    <li><strong>You own the data.</strong> Private per-brand account. Your customers' messages never leak into another brand's twin.</li>
-    <li><strong>No bloated dashboard.</strong> Paste. Read. Send. Flag when it's wrong. That's the whole product.</li>
-  </ul>
-</section>
+  <!-- COMPARISON -->
+  <section>
+    <div class="section-head">
+      <span class="section-eyebrow">Why DraftTwin</span>
+      <h2 class="section-title">DraftTwin vs. hiring human support</h2>
+      <p class="section-sub">Stop choosing between cost, speed, and quality. Your twin beats a human hire on all three.</p>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Human Support Hire</th>
+            <th class="highlight">DraftTwin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monthly cost</td>
+            <td class="human">₹15,000 – ₹25,000</td>
+            <td class="us">Free to start</td>
+          </tr>
+          <tr>
+            <td>Available hours</td>
+            <td class="human">10am – 7pm</td>
+            <td class="us">24 / 7</td>
+          </tr>
+          <tr>
+            <td>Consistent brand voice</td>
+            <td class="human">Varies by person, by day</td>
+            <td class="us">Identical every time</td>
+          </tr>
+          <tr>
+            <td>Knows your full product catalog</td>
+            <td class="human">Needs weeks of training</td>
+            <td class="us">Instant</td>
+          </tr>
+          <tr>
+            <td>Setup time</td>
+            <td class="human">Weeks of hiring + onboarding</td>
+            <td class="us">10 minutes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-<section class="final-cta">
-  <h2>Stop answering the same 12 questions.</h2>
-  <p>Spin up your twin in under 15 minutes. Cancel any time — no card required.</p>
-  <a class="btn-primary large" href="{{ url_for('auth.signup') }}">Create your brand account →</a>
-</section>
-{% endblock %}
+  <!-- WHO IT'S FOR -->
+  <section>
+    <div class="section-head">
+      <span class="section-eyebrow">Who It's For</span>
+      <h2 class="section-title">Built for Indian D2C brands</h2>
+      <p class="section-sub">If your customers DM you on WhatsApp or Instagram, DraftTwin is built for you.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-emoji">👗</div>
+        <h4>Fashion & Clothing</h4>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">💄</div>
+        <h4>Beauty & Skincare</h4>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">💪</div>
+        <h4>Health & Supplements</h4>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">🛍️</div>
+        <h4>Any D2C on WhatsApp</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="section-head">
+      <span class="section-eyebrow">Pricing</span>
+      <h2 class="section-title">Free to start. No card needed.</h2>
+      <p class="section-sub">Spin up your twin and draft unlimited replies. Upgrade paths come later — for now, it's simple.</p>
+    </div>
+    <div class="price-wrap">
+      <div class="price-card">
+        <div class="price-tag">MOST POPULAR</div>
+        <div class="price-name">Free Plan</div>
+        <div class="price-amount">₹0<span class="per"> / forever</span></div>
+        <div class="price-sub">Everything you need to replace a support hire.</div>
+        <ul class="price-features">
+          <li>Unlimited AI drafts</li>
+          <li>1 brand account</li>
+          <li>Full brain editor with versioning</li>
+          <li>Draft history & search</li>
+          <li>Flag & correction system</li>
+          <li>24/7 available — no rate limits</li>
+        </ul>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Start Free →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <h2>Your inbox isn't going to clear itself.</h2>
+    <p>Spin up your twin in under 10 minutes. Keep your customers happy while you sleep.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Get Started Free →</a>
+  </section>
+
+  <footer>
+    DraftTwin © 2026 · AI Customer Support for Indian D2C Brands
+  </footer>
+
+</body>
+</html>
