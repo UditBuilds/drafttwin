@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}DraftTwin — your brand's voice, on every customer DM{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1 class="hero-title">Your WhatsApp inbox is drowning. Your customers aren't waiting.</h1>
+  <p class="hero-sub">
+    DraftTwin is a customer support co-pilot built for Indian D2C founders. It learns your brand's
+    voice, policies, and the things you'd never say — and drafts every reply in seconds, so you
+    stop copy-pasting templates at 1am.
+  </p>
+  <div class="hero-ctas">
+    <a class="btn-primary" href="{{ url_for('auth.signup') }}">Get started — it's free</a>
+    <a class="btn-ghost" href="{{ url_for('auth.login') }}">Log in</a>
+  </div>
+  <p class="hero-note">Built for brands doing 50–500 DMs/day across WhatsApp, Instagram, and email.</p>
+</section>
+
+<section class="pains">
+  <h2 class="section-title">If any of this sounds familiar, keep reading.</h2>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-emoji">📥</div>
+      <h3>200 DMs a day, 1 of you</h3>
+      <p>Your inbox is the bottleneck. You're the founder, the CX lead, and the midnight firefighter. Replies go out late or not at all.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-emoji">🤖</div>
+      <h3>Chatbots sound like chatbots</h3>
+      <p>Generic bot replies feel cold. Your customers came for your brand — the warmth, the specific tone. Not "Dear valued customer."</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-emoji">⚠️</div>
+      <h3>One wrong reply = one Instagram story</h3>
+      <p>Refunds, shipping commitments, medical claims — get these wrong and you're doing damage control in your comments section.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <h2 class="section-title">How DraftTwin works</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h3>Onboard your brand in 10 minutes</h3>
+      <p>Answer a short form — products, prices, policies, tone, and the 5 things you'd never say.
+      DraftTwin turns it into your brand brain: a living document your twin reads before every reply.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h3>Paste a customer message → get a drafted reply</h3>
+      <p>Every draft comes classified: <span class="tag auto">AUTO</span> safe to send,
+      <span class="tag draft">DRAFT+APPROVE</span> review first (refunds, goodwill),
+      <span class="tag escalate">ESCALATE</span> you handle this one (legal, medical, PR).
+      No hallucinated prices. No invented policies.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h3>Flag bad replies — your twin gets sharper</h3>
+      <p>When a draft misses the voice, flag it and write what you'd send instead. Use the flagged
+      list as your gap sheet, edit the brain, and next week's drafts reflect the fix.</p>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <h2 class="section-title">Why founders pick DraftTwin</h2>
+  <ul class="why-list">
+    <li><strong>Your voice, not a template.</strong> The brain file captures how you actually speak — down to punctuation and emoji rules.</li>
+    <li><strong>A real Never List.</strong> Legal, medical, reseller requests, and PR traps are auto-escalated. Your twin knows when to shut up.</li>
+    <li><strong>Built for Indian D2C context.</strong> COD queries, WhatsApp-first flows, Shiprocket-style shipping timelines, GST invoices — we get it.</li>
+    <li><strong>You own the data.</strong> Private per-brand account. Your customers' messages never leak into another brand's twin.</li>
+    <li><strong>No bloated dashboard.</strong> Paste. Read. Send. Flag when it's wrong. That's the whole product.</li>
+  </ul>
+</section>
+
+<section class="final-cta">
+  <h2>Stop answering the same 12 questions.</h2>
+  <p>Spin up your twin in under 15 minutes. Cancel any time — no card required.</p>
+  <a class="btn-primary large" href="{{ url_for('auth.signup') }}">Create your brand account →</a>
+</section>
+{% endblock %}

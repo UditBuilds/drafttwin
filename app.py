@@ -38,11 +38,11 @@ def _write_brain_to_disk(brand_id: int, name: str, brain_md: str) -> None:
 
 @app.route("/")
 def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for("auth.login"))
-    if not current_user.has_brain:
-        return redirect(url_for("onboarding"))
-    return redirect(url_for("dashboard"))
+    if current_user.is_authenticated:
+        if not current_user.has_brain:
+            return redirect(url_for("onboarding"))
+        return redirect(url_for("dashboard"))
+    return render_template("landing.html")
 
 
 # --- Onboarding -------------------------------------------------------------

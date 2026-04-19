@@ -344,3 +344,203 @@ details pre { overflow-x: auto; background: #f9fafb; padding: 12px; border-radiu
   font-size: 13px;
   white-space: pre-wrap;
 }
+
+/* --- Landing page --- */
+
+.hero {
+  padding: 72px 0 48px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.hero-title {
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  max-width: 720px;
+  margin: 0 auto 20px;
+}
+.hero-sub {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 640px;
+  margin: 0 auto 28px;
+  line-height: 1.55;
+}
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.hero-note {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 13px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  border: 1px solid var(--accent);
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary.large { padding: 16px 28px; font-size: 16px; }
+
+.btn-ghost {
+  display: inline-block;
+  background: #fff;
+  color: var(--fg);
+  padding: 13px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--accent); }
+
+.section-title {
+  font-size: 22px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.pains { margin-bottom: 64px; }
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.pain-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.pain-card h3 {
+  font-size: 16px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  margin: 12px 0 8px;
+  font-weight: 600;
+}
+.pain-card p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.55;
+}
+.pain-emoji { font-size: 28px; }
+
+.how { margin-bottom: 64px; }
+.step {
+  display: flex;
+  gap: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.step-num {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+.step-body h3 {
+  font-size: 17px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  margin: 4px 0 8px;
+  font-weight: 600;
+}
+.step-body p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  margin: 0 2px;
+}
+.tag.auto { background: var(--auto); }
+.tag.draft { background: var(--draft); }
+.tag.escalate { background: var(--escalate); }
+
+.why { margin-bottom: 64px; }
+.why-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.why-list li {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.why-list li strong { color: var(--fg); }
+
+.final-cta {
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px 24px;
+  margin-bottom: 48px;
+}
+.final-cta h2 {
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--fg);
+  margin: 0 0 10px;
+}
+.final-cta p {
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+
+@media (max-width: 720px) {
+  .hero { padding: 48px 0 32px; }
+  .hero-title { font-size: 32px; }
+  .hero-sub { font-size: 15px; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .step { flex-direction: column; gap: 12px; padding: 20px; }
+  .step-num { width: 36px; height: 36px; flex: 0 0 36px; }
+  .final-cta { padding: 32px 20px; }
+  .final-cta h2 { font-size: 22px; }
+}
