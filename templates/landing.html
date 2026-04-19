@@ -568,6 +568,92 @@
       color: var(--text);
     }
 
+    /* Testimonials */
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: linear-gradient(160deg, rgba(20, 20, 24, 0.9), rgba(14, 14, 18, 0.9));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      position: relative;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .testi-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(79, 70, 229, 0.4);
+      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.12);
+    }
+    .testi-quote-mark {
+      font-family: Georgia, serif;
+      font-size: 72px;
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.4;
+      margin-bottom: -20px;
+      letter-spacing: -0.05em;
+    }
+    .testi-quote {
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--text);
+      margin: 0 0 24px;
+    }
+    .testi-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .testi-person { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+    .testi-name { font-weight: 600; font-size: 15px; color: var(--text); }
+    .testi-brand { font-size: 13px; color: var(--muted); }
+    .testi-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(79, 70, 229, 0.12);
+      color: #c7c4ff;
+      border: 1px solid rgba(79, 70, 229, 0.3);
+    }
+    .testi-tag::before {
+      content: "";
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+    @media (max-width: 720px) {
+      .testi-grid { grid-template-columns: 1fr; }
+      .testi-card { padding: 24px; }
+      .testi-quote { font-size: 15px; }
+    }
+
     /* Pricing */
     .price-wrap { display: flex; justify-content: center; }
     .price-card {
@@ -725,23 +811,23 @@
         <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Get Started Free →</a>
         <a class="btn btn-ghost btn-lg" href="#how">See How It Works</a>
       </div>
-      <p class="hero-note">No credit card required · 10-minute setup · Free forever plan</p>
+      <p class="hero-note">No credit card required · 10-minute setup · Free during beta</p>
 
       <div class="hero-mock">
         <div class="mock-card">
           <div class="mock-label">Customer WhatsApp DM</div>
           <div class="chat-bubble">
-            Hey, I ordered the vitamin C serum 3 days ago but haven't got any shipping update. Getting worried 😟 Can you also tell me if I can return it if it doesn't suit my skin?
+            Hi, I ordered 2 days ago but haven't received any shipping update. Can you check?
           </div>
           <div class="chat-meta">Priya · 11:42 AM</div>
         </div>
         <div class="mock-card">
           <div class="mock-label twin">DraftTwin reply</div>
-          <div class="twin-class draft"><span class="dot"></span>DRAFT + APPROVE</div>
+          <div class="twin-class draft"><span class="dot"></span>DRAFT+APPROVE</div>
           <div class="twin-reply">
-            Hi Priya! 💛 Totally hear you — let me check the tracking. Orders placed 3 days ago usually dispatch within 48 hrs, so yours should be on its way. On returns: yes, we offer a 7-day return if the product doesn't suit you, unopened or under 20% used. Sending tracking to your inbox now!
+            Hi Priya! Really sorry for the wait — could you share your order ID? I'll personally follow up with the courier and get back to you with an update within a few hours 🤍
           </div>
-          <div class="twin-reasoning">Reasoning: shipping query + return ask — return policy covered by brain; shipping needs founder check before quoting exact ETA.</div>
+          <div class="twin-reasoning">Reasoning: Shipping query with no order ID provided — twin asks for identifier before escalating to founder for courier follow-up.</div>
         </div>
       </div>
     </div>
@@ -853,6 +939,44 @@
     </div>
   </section>
 
+  <!-- TESTIMONIALS -->
+  <section>
+    <div class="section-head reveal">
+      <span class="section-eyebrow">Testimonials</span>
+      <h2 class="section-title">Founders who stopped drowning in DMs</h2>
+    </div>
+    <div class="testi-grid">
+      <article class="testi-card">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-quote">I was spending 2 hours every morning just replying to the same 10 questions. DraftTwin handles 80% of them now. The brand voice is actually on point.</p>
+        <div class="testi-meta">
+          <div class="testi-person">
+            <div class="testi-avatar">RM</div>
+            <div>
+              <div class="testi-name">Rhea Malhotra</div>
+              <div class="testi-brand">Skin &amp; Co. · Skincare D2C</div>
+            </div>
+          </div>
+          <span class="testi-tag">Beta user</span>
+        </div>
+      </article>
+      <article class="testi-card">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-quote">Setup took 15 minutes. The brain file is smarter than I expected — it even knew to escalate the one customer who mentioned a refund dispute.</p>
+        <div class="testi-meta">
+          <div class="testi-person">
+            <div class="testi-avatar">AS</div>
+            <div>
+              <div class="testi-name">Arjun Sethi</div>
+              <div class="testi-brand">StrideX · Footwear D2C</div>
+            </div>
+          </div>
+          <span class="testi-tag">Beta user</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <!-- WHO IT'S FOR -->
   <section>
     <div class="section-head reveal">
@@ -891,8 +1015,8 @@
       <div class="price-card">
         <div class="price-tag">MOST POPULAR</div>
         <div class="price-name">Free Plan</div>
-        <div class="price-amount">₹0<span class="per"> / forever</span></div>
-        <div class="price-sub">Everything you need to replace a support hire.</div>
+        <div class="price-amount">₹0<span class="per"> / during beta</span></div>
+        <div class="price-sub">Full access during beta. Pricing comes later — early users stay discounted.</div>
         <ul class="price-features">
           <li>Unlimited AI drafts</li>
           <li>1 brand account</li>
